@@ -1,0 +1,58 @@
+services:
+  oci-helper:
+    image: ghcr.io/yohann0617/oci-helper:master
+    container_name: oci-helper
+    restart: unless-stopped
+    ports:
+      - "8818:8818"
+    environment:
+      - TZ=Asia/Shanghai
+      - WEB_ACCOUNT=${WEB_ACCOUNT}
+      - WEB_PASSWORD=${WEB_PASSWORD}
+      - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/oci-helper/data/oci-helper.db
+    volumes:
+      - oci_helper_data:/app/oci-helper/data
+      - oci_helper_keys:/app/oci-helper/keys
+    networks:
+      - oci-helper-net
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://127.0.0.1:8818/"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+
+  websockify:
+    image: ghcr.io/yohann0617/oci-helper-websockify:master
+    container_name: websockify
+    restart: unless-stopped
+    ports:
+      - "6080:6080"
+    depends_on:
+      - oci-helper
+    networks:
+      - oci-helper-net
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  oci_helper_data:
+    name: oci_helper_data
+  oci_helper_keys:
+    name: oci_helper_keys
+
+networks:
+  oci-helper-net:
+    driver: bridge
