@@ -10,6 +10,7 @@ services:
       - WEB_ACCOUNT=${WEB_ACCOUNT}
       - WEB_PASSWORD=${WEB_PASSWORD}
       - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/oci-helper/data/oci-helper.db
+      - OCI_CFG_KEY_DIR_PATH=/app/oci-helper/keys
     volumes:
       - oci_helper_data:/app/oci-helper/data
       - oci_helper_keys:/app/oci-helper/keys
