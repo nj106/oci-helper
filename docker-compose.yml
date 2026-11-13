@@ -6,7 +6,7 @@ services:
     ports:
       - "8818:8818"
     environment:
-      - TZ=Asia/Shanghai
+      - TZ=${TZ}
       - WEB_ACCOUNT=${WEB_ACCOUNT}
       - WEB_PASSWORD=${WEB_PASSWORD}
       - SPRING_DATASOURCE_URL=jdbc:sqlite:/app/oci-helper/data/oci-helper.db
